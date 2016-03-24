@@ -1,0 +1,81 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Dibujar en el CANVAS</title>
+<style>
+	h1{
+		text-align: center;
+		margin:0;
+	}
+	body{
+		width:500px;
+		margin:0 auto;
+	}
+	#canvas{
+		border:dotted 1px yellow;
+		background: green;
+	}
+</style>
+<script>
+	DIBUJA={
+		canvas:null,
+		bandera:false,
+		pos:{},
+		ctx:null,
+		inicio:function(){
+			if(this.canvas && this.canvas.getContext){
+				this.ctx = this.canvas.getContext("2d");
+				if(this.ctx){
+					return this.ctx;
+				} else {
+					alert("No acepta el navegador el CANVAS")
+				}
+			} else {
+				alert("No acepta el navegador el CANVAS")
+			}
+		},
+		ajusta:function(xx,yy){
+			var posCanvas = this.canvas.getBoundingClientRect();
+			var x = xx - posCanvas.left;
+			var y = yy - posCanvas.top;
+			return {x:x, y:y};
+		},
+		dibuja:function(inicio, fin){
+			this.ctx.beginPath();
+			this.ctx.strokeStyle = "yellow";
+			this.ctx.lineWidth = 1;
+			this.ctx.moveTo(inicio.x, inicio.y);
+			this.ctx.lineTo(fin.x, fin.y);
+			this.ctx.stroke();
+		}
+	}
+	window.onload = function(){
+		DIBUJA.canvas = document.getElementById("canvas");
+		//Eventos
+		DIBUJA.canvas.onmousedown=function(e){
+			this.pos = DIBUJA.ajusta(e.clientX,e.clientY)
+			this.bandera = true;
+		}
+		DIBUJA.canvas.onmouseup=function(e){
+			this.bandera = false;
+		}	
+		DIBUJA.canvas.onmousemove=function(e){
+			if(this.bandera){
+				var fin = DIBUJA.ajusta(e.clientX, e.clientY);
+				DIBUJA.dibuja(this.pos, fin);
+				this.pos = fin;
+			}
+		}
+		/******* INICIO *********/
+		DIBUJA.inicio();
+	}
+</script>
+</head>
+<body>
+<h1>Dibuja con botón sostenido</h1>
+<canvas id="canvas" width="500px" height="300px">
+Tu navegador no soporta el CANVAS de HTML5
+</canvas>
+</body>
+</html>
